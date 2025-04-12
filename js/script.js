@@ -1,13 +1,32 @@
 document.addEventListener("DOMContentLoaded", function() {
-
-
-
     const conteneursMarqueurs = document.querySelectorAll(".marker-container");
     const conteneurCarte = document.querySelector(".carte-outer-container");
     const imageCarte = document.querySelector(".carte-img");
+    const carteContainer = document.querySelector(".carte-container");
     
-    const largeurEcranPetit = 800;
+    const largeurEcranPetit = 1000;
     let timeoutId;
+
+    centrerCarteEtMarqueurs();
+    
+    window.addEventListener('resize', centrerCarteEtMarqueurs);
+    
+    function centrerCarteEtMarqueurs() {
+        conteneurCarte.style.height = window.innerHeight + 'px';
+
+        if (estPetitEcran()) {
+            carteContainer.style.height = 'auto';
+            carteContainer.style.width = '90vw';
+            imageCarte.style.height = 'auto';
+            imageCarte.style.width = '100%';
+        } else {
+
+            carteContainer.style.height = '100vh';
+            carteContainer.style.width = 'auto';
+            imageCarte.style.height = '100%';
+            imageCarte.style.width = 'auto';
+        }
+    }
 
     function estPetitEcran() {
         return window.innerWidth < largeurEcranPetit;
@@ -15,17 +34,60 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function afficherInfoBulle(elementInfo, rect, rectConteneur, famille) {
         let positionGauche, positionHaut;
+        
 
-        if (famille === 'emmanuelli') {
-            positionGauche = rect.right - rectConteneur.left;
-            positionHaut = rect.top - rectConteneur.top;
-        } else {
-            positionGauche = rect.left - rectConteneur.left;
-            positionHaut = rect.bottom - rectConteneur.top;
+        switch(famille) {
+            case 'lavarenne':
+                positionGauche = rect.right - rectConteneur.left;
+                positionHaut = rect.top - rectConteneur.top;
+                break;
+            case 'champignol':
+                positionGauche = rect.left - rectConteneur.left;
+                positionHaut = rect.bottom - rectConteneur.top;
+                break;
+            case 'lesmuriers':
+                positionGauche = rect.right - rectConteneur.left;
+                positionHaut = rect.top - rectConteneur.top;
+                break;
+            case 'leparcsm':
+                positionGauche = rect.left - rectConteneur.left;
+                positionHaut = rect.bottom - rectConteneur.top;
+                break;
+            case 'smcreteil':
+                positionGauche = rect.right - rectConteneur.left;
+                positionHaut = rect.top - rectConteneur.top;
+                break;
+            case 'vieuxsm':
+                positionGauche = rect.left - rectConteneur.left;
+                positionHaut = rect.bottom - rectConteneur.top;
+                break;
+            case 'lapie':
+                positionGauche = rect.right - rectConteneur.left;
+                positionHaut = rect.top - rectConteneur.top;
+                break;
+            case 'adamville':
+                positionGauche = rect.left - rectConteneur.left;
+                positionHaut = rect.bottom - rectConteneur.top;
+                break;
+            default:
+                positionGauche = rect.right - rectConteneur.left;
+                positionHaut = rect.top - rectConteneur.top;
         }
 
-        if (positionGauche + 300 > rectConteneur.width) {
-            positionGauche = rect.left - rectConteneur.left - 300;
+        if (positionGauche + 310 > rectConteneur.width) {
+            positionGauche = rect.left - rectConteneur.left - 350;
+        }
+        
+        if (positionGauche < 0) {
+            positionGauche = 10;
+        }
+        
+        if (positionHaut + 400 > rectConteneur.height) {
+            positionHaut = rect.top - rectConteneur.top - 250;
+        }
+        
+        if (positionHaut < 0) {
+            positionHaut = 10;
         }
 
         elementInfo.style.left = `${positionGauche}px`;
@@ -38,7 +100,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function agrandirCarte() {
-        imageCarte.style.transform = "scale(1.02)";
         imageCarte.style.filter = "brightness(0.9)";
     }
 
@@ -93,9 +154,9 @@ document.addEventListener("DOMContentLoaded", function() {
                     cacherInfoBulle(elementInfo);
                     reinitialiserCarte();
                 }
-        }, 100);
-    });
-}
+            }, 100);
+        });
+    }
 
     function gererClicMarqueur(conteneur) {
         conteneur.addEventListener("click", function(e) {
@@ -145,6 +206,7 @@ document.addEventListener("DOMContentLoaded", function() {
             boutonFermer.style.position = 'absolute';
             boutonFermer.style.top = '10px';
             boutonFermer.style.right = '10px';
+            boutonFermer.classList.add('bouton-fermer');
             boutonFermer.addEventListener('click', function() {
                 cacherInfoBulle(elementInfo);
             });
@@ -181,4 +243,5 @@ document.addEventListener("DOMContentLoaded", function() {
         }, 100);
     });
 
+    document.body.classList.add('js-loaded');
 });
