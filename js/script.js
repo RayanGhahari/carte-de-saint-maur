@@ -4,8 +4,21 @@ document.addEventListener("DOMContentLoaded", function() {
     const imageCarte = document.querySelector(".carte-img");
     const carteContainer = document.querySelector(".carte-container");
     
-    const largeurEcranPetit = 1000;
+    const largeurEcranPetit = 900;
     let timeoutId;
+    let isTransitioning = false;
+
+    // Coordonnées de zoom pour chaque quartier (centre x%, centre y%, niveau de zoom)
+    const zoomCoordinates = {
+        'lavarenne': { x: 100, y: 70, scale: 1.75 },
+        'leparcsm': { x: 70, y: 11, scale: 2.75 },
+        'vieuxsm': { x: -20, y: -55, scale: 3.25 },
+        'champignol': { x: 115, y: 20, scale: 2.75 },
+        'smcreteil': { x: -50, y: -10, scale: 3 },
+        'adamville': { x: 38.6, y: 60, scale: 2.25 },
+        'lapie': { x: 15, y: 100, scale: 2 },
+        'lesmuriers': { x: 95, y: 167, scale: 3.5 }
+    };
 
     centrerCarteEtMarqueurs();
     
@@ -20,7 +33,6 @@ document.addEventListener("DOMContentLoaded", function() {
             imageCarte.style.height = 'auto';
             imageCarte.style.width = '100%';
         } else {
-
             carteContainer.style.height = '100vh';
             carteContainer.style.width = 'auto';
             imageCarte.style.height = '100%';
@@ -35,7 +47,6 @@ document.addEventListener("DOMContentLoaded", function() {
     function afficherInfoBulle(elementInfo, rect, rectConteneur, famille) {
         let positionGauche, positionHaut;
         
-
         switch(famille) {
             case 'lavarenne':
                 positionGauche = rect.right - rectConteneur.left;
@@ -69,6 +80,34 @@ document.addEventListener("DOMContentLoaded", function() {
                 positionGauche = rect.left - rectConteneur.left;
                 positionHaut = rect.bottom - rectConteneur.top;
                 break;
+            case 'stalingrad':
+                positionGauche = rect.right - rectConteneur.left;
+                positionHaut = rect.top - rectConteneur.top;
+                break;
+            case 'birhakeim':
+                positionGauche = rect.left - rectConteneur.left;
+                positionHaut = rect.bottom - rectConteneur.top;
+                break;
+            case 'liberation':
+                positionGauche = rect.right - rectConteneur.left;
+                positionHaut = rect.top - rectConteneur.top;
+                break;
+            case 'resistance':
+                positionGauche = rect.left - rectConteneur.left;
+                positionHaut = rect.bottom - rectConteneur.top;
+                break;
+            case 'bayon':
+                positionGauche = rect.right - rectConteneur.left;
+                positionHaut = rect.top - rectConteneur.top;
+                break;
+            case 'lattre':
+                positionGauche = rect.left - rectConteneur.left;
+                positionHaut = rect.bottom - rectConteneur.top;
+                break;
+            case 'leclerc':
+                positionGauche = rect.right - rectConteneur.left;
+                positionHaut = rect.top - rectConteneur.top;
+                break;
             default:
                 positionGauche = rect.right - rectConteneur.left;
                 positionHaut = rect.top - rectConteneur.top;
@@ -83,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         
         if (positionHaut + 400 > rectConteneur.height) {
-            positionHaut = rect.top - rectConteneur.top - 250;
+            positionHaut = rect.top - rectConteneur.top - 200;
         }
         
         if (positionHaut < 0) {
@@ -104,13 +143,97 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function reinitialiserCarte() {
-        imageCarte.style.transform = "scale(1)";
-        imageCarte.style.filter = "brightness(1)";
+        if (!isTransitioning) {
+            imageCarte.style.transform = "scale(1)";
+            imageCarte.style.filter = "brightness(1)";
+            carteContainer.style.transform = "translate(0, 0)";
+        }
+    }
+
+    // Créer un overlay pour bloquer les interactions pendant la transition
+    function creerOverlayTransition() {
+        let overlay = document.getElementById('transition-overlay');
+        
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'transition-overlay';
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.zIndex = '999';
+            overlay.style.pointerEvents = 'all';
+            overlay.style.background = 'transparent';
+            document.body.appendChild(overlay);
+        } else {
+            overlay.style.display = 'block';
+        }
+        
+        return overlay;
+    }
+
+    function supprimerOverlayTransition() {
+        const overlay = document.getElementById('transition-overlay');
+        if (overlay) {
+            overlay.style.display = 'none';
+        }
+    }
+
+    function zoomSurQuartier(famille, callback) {
+        if (isTransitioning) return;
+        isTransitioning = true;
+
+        // Créer un overlay pour bloquer toute interaction pendant la transition
+        const overlay = creerOverlayTransition();
+
+        const coords = zoomCoordinates[famille];
+        
+        // Cacher tous les marqueurs pendant l'animation
+        conteneursMarqueurs.forEach(marqueur => {
+            marqueur.style.opacity = '0';
+            marqueur.style.transition = 'opacity 0.1s';
+        });
+        
+        // Cacher le titre
+        const titre = document.querySelector('.titre');
+        if (titre) {
+            titre.style.opacity = '0';
+            titre.style.transition = 'opacity 0.5s ease';
+        }
+        
+        // Arrêter tous les timeouts en cours
+        clearTimeout(timeoutId);
+        
+        // Cacher toutes les infobulles visibles
+        document.querySelectorAll('.famille-info.visible').forEach(div => {
+            cacherInfoBulle(div);
+        });
+        
+        // Centrer la carte sur le quartier et appliquer le zoom
+        carteContainer.style.transition = 'transform 2s ease';
+        imageCarte.style.transition = 'transform 2s ease';
+        
+        // Calcule le décalage pour centrer le point sur l'écran
+        const xOffset = 50 - coords.x;
+        const yOffset = 50 - coords.y;
+        
+        carteContainer.style.transform = `translate(${xOffset}%, ${yOffset}%)`;
+        imageCarte.style.transform = `scale(${coords.scale})`;
+        
+        // Après la fin de l'animation, naviguer vers la page du quartier
+        setTimeout(function() {
+            // Supprimer l'overlay avant de naviguer
+            supprimerOverlayTransition();
+            
+            // Appeler le callback (navigation)
+            callback();
+        }, 2000);
     }
 
     function gererSurvolMarqueur(conteneur) {
         conteneur.addEventListener("mouseenter", function() {
-            if (estPetitEcran()) return;
+            if (estPetitEcran() || isTransitioning) return;
             
             const famille = this.dataset.family;
             const elementInfo = document.getElementById(`info-${famille}`);
@@ -130,27 +253,31 @@ document.addEventListener("DOMContentLoaded", function() {
 
             // Ajouter des écouteurs d'événements à l'info-bulle
             elementInfo.addEventListener("mouseenter", function() {
+                if (isTransitioning) return;
                 clearTimeout(timeoutId);
                 this.style.transform = 'scale(1.05)';
             });
 
             elementInfo.addEventListener("mouseleave", function() {
+                if (isTransitioning) return;
                 this.style.transform = 'scale(1)';
                 timeoutId = setTimeout(() => {
-                    cacherInfoBulle(elementInfo);
-                    reinitialiserCarte();
+                    if (!isTransitioning) {
+                        cacherInfoBulle(elementInfo);
+                        reinitialiserCarte();
+                    }
                 }, 100);
             });
         });
 
         conteneur.addEventListener("mouseleave", function() {
-            if (estPetitEcran()) return;
+            if (estPetitEcran() || isTransitioning) return;
             
             const famille = this.dataset.family;
             const elementInfo = document.getElementById(`info-${famille}`);
             
             timeoutId = setTimeout(() => {
-                if (!elementInfo.matches(':hover')) {
+                if (!isTransitioning && !elementInfo.matches(':hover')) {
                     cacherInfoBulle(elementInfo);
                     reinitialiserCarte();
                 }
@@ -160,6 +287,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function gererClicMarqueur(conteneur) {
         conteneur.addEventListener("click", function(e) {
+            if (isTransitioning) {
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+            }
+            
             const famille = this.dataset.family;
             const elementInfo = document.getElementById(`info-${famille}`);
             
@@ -169,13 +302,25 @@ document.addEventListener("DOMContentLoaded", function() {
                 elementsInfoVisibles.forEach(cacherInfoBulle);
                 afficherInfoBulleMobile(elementInfo);
             } else {
-                window.location.href = `les-Justes/famille-${famille}`;
+                e.preventDefault();
+                // Cacher l'infobulle si elle est visible
+                cacherInfoBulle(elementInfo);
+                
+                // Zoomer sur le quartier, puis naviguer vers la page dédiée
+                zoomSurQuartier(famille, function() {
+                    window.location.href = `quartier/${famille.replace('leparcsm', 'le-parc-saint-maur')
+                        .replace('vieuxsm', 'vieux-saint-maur')
+                        .replace('smcreteil', 'saint-maur-creteil')
+                        .replace('lesmuriers', 'les-muriers')
+                        .replace('lavarenne', 'la-varenne')
+                        .replace('lapie', 'la-pie')}.html`;
+                });
             }
         });
     }
 
     function gererClicDocument(event) {
-        if (estPetitEcran()) {
+        if (estPetitEcran() && !isTransitioning) {
             const elementsInfo = document.querySelectorAll('.famille-info.visible');
             elementsInfo.forEach(elementInfo => {
                 if (!elementInfo.contains(event.target) && !event.target.closest('.marker-container')) {
@@ -223,25 +368,133 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    // Gérer les clics sur les boutons "Découvrir"
+    const boutonsDecouvrir = document.querySelectorAll('.btn-decouvrir');
+    boutonsDecouvrir.forEach(bouton => {
+        bouton.addEventListener('click', function(e) {
+            if (isTransitioning) {
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+            }
+            
+            e.preventDefault();
+            
+            const familleInfo = this.closest('.famille-info');
+            if (!familleInfo) return;
+            
+            // Extraire l'identifiant du quartier à partir de l'ID de l'élément info
+            const infoId = familleInfo.id;
+            const famille = infoId.replace('info-', '');
+            
+            // Fermer l'infobulle
+            cacherInfoBulle(familleInfo);
+            
+            // Zoomer sur le quartier puis naviguer
+            zoomSurQuartier(famille, function() {
+                // Rediriger vers l'URL spécifiée dans le bouton
+                window.location.href = bouton.getAttribute('href');
+            });
+        });
+    });
+
     conteneursMarqueurs.forEach(conteneur => {
         gererSurvolMarqueur(conteneur);
         gererClicMarqueur(conteneur);
     });
 
     conteneurCarte.addEventListener("mouseleave", function() {
-        if (estPetitEcran()) return;
+        if (estPetitEcran() || isTransitioning) return;
         
         timeoutId = setTimeout(() => {
-            const elementsInfo = document.querySelectorAll('.famille-info');
-            elementsInfo.forEach(elementInfo => {
-                if (!elementInfo.matches(':hover')) {
-                    cacherInfoBulle(elementInfo);
-                    elementInfo.style.transform = 'scale(1)'; // Réinitialiser l'échelle
-                    reinitialiserCarte();
-                }
-            });
+            if (!isTransitioning) {
+                const elementsInfo = document.querySelectorAll('.famille-info');
+                elementsInfo.forEach(elementInfo => {
+                    if (!elementInfo.matches(':hover')) {
+                        cacherInfoBulle(elementInfo);
+                        elementInfo.style.transform = 'scale(1)';
+                        reinitialiserCarte();
+                    }
+                });
+            }
         }, 100);
     });
+
+    // Gestion du retour à la page d'accueil avec transition inverse
+    // Vérifier si on vient de naviguer depuis une page de quartier
+    if (localStorage.getItem('transitionRetour') === 'true') {
+        const quartier = localStorage.getItem('quartierId');
+        
+        // Convertir le nom du fichier en identifiant de quartier
+        let quartierId = quartier;
+        if (quartier === 'le-parc-saint-maur') quartierId = 'leparcsm';
+        else if (quartier === 'vieux-saint-maur') quartierId = 'vieuxsm';
+        else if (quartier === 'saint-maur-creteil') quartierId = 'smcreteil';
+        else if (quartier === 'les-muriers') quartierId = 'lesmuriers';
+        else if (quartier === 'la-varenne') quartierId = 'lavarenne';
+        else if (quartier === 'la-pie') quartierId = 'lapie';
+        
+        // Si on trouve un quartier valide, animer la transition inverse
+        if (quartierId && zoomCoordinates[quartierId]) {
+            const coords = zoomCoordinates[quartierId];
+            
+            // Démarrer avec le zoom sur le quartier
+            isTransitioning = true;
+            
+            // Créer un overlay pour bloquer les interactions pendant la transition inverse
+            creerOverlayTransition();
+            
+            // Cacher tous les marqueurs pendant l'animation de retour
+            conteneursMarqueurs.forEach(marqueur => {
+                marqueur.style.opacity = '0';
+            });
+            
+            // Cacher le titre pendant l'animation de retour
+            const titre = document.querySelector('.titre');
+            if (titre) {
+                titre.style.opacity = '0';
+            }
+            
+            // Calculer le décalage pour centrer sur le quartier
+            const xOffset = 50 - coords.x;
+            const yOffset = 50 - coords.y;
+            
+            // Positionner la carte comme si on était zoomé sur le quartier
+            carteContainer.style.transition = 'none';
+            imageCarte.style.transition = 'none';
+            carteContainer.style.transform = `translate(${xOffset}%, ${yOffset}%)`;
+            imageCarte.style.transform = `scale(${coords.scale})`;
+            
+            // Forcer un reflow pour appliquer les styles avant de démarrer l'animation
+            void carteContainer.offsetWidth;
+            
+            // Après un court délai, animer le retour à la vue normale
+            setTimeout(() => {
+                carteContainer.style.transition = 'transform 2s ease';
+                imageCarte.style.transition = 'transform 2s ease';
+                carteContainer.style.transform = 'translate(0, 0)';
+                imageCarte.style.transform = 'scale(1)';
+                
+                // Afficher à nouveau les marqueurs et le titre après l'animation
+                setTimeout(() => {
+                    conteneursMarqueurs.forEach(marqueur => {
+                        marqueur.style.opacity = '1';
+                    });
+                    
+                    if (titre) {
+                        titre.style.opacity = '1';
+                    }
+                    
+                    isTransitioning = false;
+                    supprimerOverlayTransition();
+                }, 2000);
+            }, 100);
+            
+            // Nettoyer le localStorage
+            localStorage.removeItem('transitionRetour');
+            localStorage.removeItem('quartierId');
+        }
+    }
 
     document.body.classList.add('js-loaded');
 });
