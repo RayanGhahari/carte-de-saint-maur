@@ -17,7 +17,26 @@ document.addEventListener("DOMContentLoaded", function() {
         'smcreteil': { x: -50, y: -10, scale: 3 },
         'adamville': { x: 38.6, y: 60, scale: 2.25 },
         'lapie': { x: 15, y: 100, scale: 2 },
-        'lesmuriers': { x: 95, y: 167, scale: 3.5 }
+        'lesmuriers': { x: 95, y: 167, scale: 3.5 },
+        'stalingrad': { x: 145, y: 80, scale: 5 },
+        'birhakeim': { x: -75, y: 47, scale: 4.5 },
+        'juin': { x: 85, y: -10, scale: 5 },
+        'bayon': { x: 170, y: 290, scale: 6 },
+        'resistance': { x: 45, y: 250, scale: 5 },
+        'liberation': { x: 35, y: 50, scale: 2 },
+        'lattre': { x: 50, y: 20, scale: 2 },
+        'leclerc': { x: 35, y: 35, scale: 2 },
+        'rue-andre-bollier': { x: 70, y: 85, scale: 3.5 },
+        'rue-edouard-vallerand': { x: 5, y: -100, scale: 4 },
+        'square-emilie-tillion': { x: 50, y: 50, scale: 3.5 },
+        'avenue-des-fusilles-de-chateaubriant': { x: 60, y: 60, scale: 3.5 },
+        'avenue-gabriel-peri': { x: 70, y: 70, scale: 3.5 },
+        'boulevard-du-general-giraud': { x: 80, y: 80, scale: 3.5 },
+        'place-jean-moulin': { x: 90, y: 90, scale: 3.5 },
+        'avenue-leopold-sedar-senghor': { x: 100, y: 100, scale: 3.5 },
+        'avenue-pierre-brossolette': { x: 110, y: 110, scale: 3.5 },
+        'rue-politzer': { x: 120, y: 120, scale: 3.5 },
+        'carrefour-du-huit-mai-1945': { x: 130, y: 130, scale: 3.5 }
     };
 
     centrerCarteEtMarqueurs();
@@ -53,60 +72,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 positionHaut = rect.top - rectConteneur.top;
                 break;
             case 'champignol':
-                positionGauche = rect.left - rectConteneur.left;
-                positionHaut = rect.bottom - rectConteneur.top;
-                break;
-            case 'lesmuriers':
-                positionGauche = rect.right - rectConteneur.left;
-                positionHaut = rect.top - rectConteneur.top;
-                break;
-            case 'leparcsm':
-                positionGauche = rect.left - rectConteneur.left;
-                positionHaut = rect.bottom - rectConteneur.top;
-                break;
-            case 'smcreteil':
-                positionGauche = rect.right - rectConteneur.left;
-                positionHaut = rect.top - rectConteneur.top;
-                break;
-            case 'vieuxsm':
-                positionGauche = rect.left - rectConteneur.left;
-                positionHaut = rect.bottom - rectConteneur.top;
-                break;
-            case 'lapie':
-                positionGauche = rect.right - rectConteneur.left;
-                positionHaut = rect.top - rectConteneur.top;
+                positionGauche = 2*rect.left + 2*rectConteneur.left;
+                positionHaut = - rect.bottom + rectConteneur.top;
                 break;
             case 'adamville':
-                positionGauche = rect.left - rectConteneur.left;
+                positionGauche = 2*rect.left + 2*rectConteneur.left;
                 positionHaut = rect.bottom - rectConteneur.top;
-                break;
-            case 'stalingrad':
-                positionGauche = rect.right - rectConteneur.left;
-                positionHaut = rect.top - rectConteneur.top;
-                break;
-            case 'birhakeim':
-                positionGauche = rect.left - rectConteneur.left;
-                positionHaut = rect.bottom - rectConteneur.top;
-                break;
-            case 'liberation':
-                positionGauche = rect.right - rectConteneur.left;
-                positionHaut = rect.top - rectConteneur.top;
-                break;
-            case 'resistance':
-                positionGauche = rect.left - rectConteneur.left;
-                positionHaut = rect.bottom - rectConteneur.top;
-                break;
-            case 'bayon':
-                positionGauche = rect.right - rectConteneur.left;
-                positionHaut = rect.top - rectConteneur.top;
-                break;
-            case 'lattre':
-                positionGauche = rect.left - rectConteneur.left;
-                positionHaut = rect.bottom - rectConteneur.top;
-                break;
-            case 'leclerc':
-                positionGauche = rect.right - rectConteneur.left;
-                positionHaut = rect.top - rectConteneur.top;
                 break;
             default:
                 positionGauche = rect.right - rectConteneur.left;
@@ -125,6 +96,10 @@ document.addEventListener("DOMContentLoaded", function() {
             positionHaut = rect.top - rectConteneur.top - 200;
         }
         
+        if (positionHaut < 0) {
+            positionHaut = 10;
+        }
+
         if (positionHaut < 0) {
             positionHaut = 10;
         }
@@ -231,6 +206,47 @@ document.addEventListener("DOMContentLoaded", function() {
         }, 2000);
     }
 
+    function zoomSurRue(famille, callback) {
+        if (isTransitioning) return;
+        isTransitioning = true;
+    
+        const overlay = creerOverlayTransition();
+        const coords = zoomCoordinates[famille];
+    
+        conteneursMarqueurs.forEach(marqueur => {
+            marqueur.style.opacity = '0';
+            marqueur.style.transition = 'opacity 0.1s';
+        });
+    
+        const soustitre = document.querySelector('.sous-titre');
+        if (soustitre) {
+            soustitre.style.opacity = '0';
+            soustitre.style.transition = 'opacity 0.1s ease';
+        }
+    
+        clearTimeout(timeoutId);
+    
+        document.querySelectorAll('.famille-info.visible').forEach(cacherInfoBulle);
+    
+        carteContainer.style.transition = 'transform 2s ease';
+        imageCarte.style.transition = 'transform 2s ease';
+    
+        const xOffset = 50 - coords.x;
+        const yOffset = 50 - coords.y;
+    
+        carteContainer.style.transform = `translate(${xOffset}%, ${yOffset}%)`;
+        imageCarte.style.transform = `scale(${coords.scale})`;
+    
+        setTimeout(function() {
+            // Supprimer l'overlay avant de naviguer
+            supprimerOverlayTransition();
+            
+            // Appeler le callback (navigation)
+            callback();
+        }, 2000);
+    }
+    
+
     function gererSurvolMarqueur(conteneur) {
         conteneur.addEventListener("mouseenter", function() {
             if (estPetitEcran() || isTransitioning) return;
@@ -295,7 +311,8 @@ document.addEventListener("DOMContentLoaded", function() {
             
             const famille = this.dataset.family;
             const elementInfo = document.getElementById(`info-${famille}`);
-            
+            const estDansQuartier = /\/quartier\//.test(window.location.pathname);
+    
             if (estPetitEcran()) {
                 e.preventDefault();
                 const elementsInfoVisibles = document.querySelectorAll('.famille-info.visible');
@@ -303,21 +320,37 @@ document.addEventListener("DOMContentLoaded", function() {
                 afficherInfoBulleMobile(elementInfo);
             } else {
                 e.preventDefault();
-                // Cacher l'infobulle si elle est visible
                 cacherInfoBulle(elementInfo);
-                
-                // Zoomer sur le quartier, puis naviguer vers la page dédiée
-                zoomSurQuartier(famille, function() {
-                    window.location.href = `quartier/${famille.replace('leparcsm', 'le-parc-saint-maur')
-                        .replace('vieuxsm', 'vieux-saint-maur')
-                        .replace('smcreteil', 'saint-maur-creteil')
-                        .replace('lesmuriers', 'les-muriers')
-                        .replace('lavarenne', 'la-varenne')
-                        .replace('lapie', 'la-pie')}.html`;
-                });
+    
+                if (estDansQuartier) {
+                    zoomSurRue(famille, function() {
+                        const lienRue = famille
+                            .replace('stalingrad', 'place-de-stalingrad')
+                            .replace('birhakeim', 'rue-de-bir-hakeim')
+                            .replace('juin', 'place-du-marechal-juin')
+                            .replace('bayon', 'rue-bayon')
+                            .replace('resistance', 'place-de-la-resistance')
+                            .replace('liberation', 'avenue-de-la-liberation')
+                            .replace('lattre', 'avenue-de-lattre-de-tassigny')
+                            .replace('leclerc', 'avenue-du-general-leclerc')
+                        window.location.href = `../rues/${lienRue}.html`;
+                    });
+                } else {
+                    zoomSurQuartier(famille, function() {
+                        const lienQuartier = famille
+                            .replace('leparcsm', 'le-parc-saint-maur')
+                            .replace('vieuxsm', 'vieux-saint-maur')
+                            .replace('smcreteil', 'saint-maur-creteil')
+                            .replace('lesmuriers', 'les-muriers')
+                            .replace('lavarenne', 'la-varenne')
+                            .replace('lapie', 'la-pie');
+                        window.location.href = `quartier/${lienQuartier}.html`;
+                    });
+                }
             }
         });
     }
+    
 
     function gererClicDocument(event) {
         if (estPetitEcran() && !isTransitioning) {

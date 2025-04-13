@@ -91,6 +91,7 @@
     width: 100%;
     text-align: center;
     padding-left: 35%;
+    pointer-events: none;
 }
 .sous-titre h2{
     margin: 2% 40% 0 40%;
@@ -210,6 +211,61 @@
     top: 30%;
 }
 
+#marker-container-rue-edouard-vallerand {
+    left: 32.5%;
+    top: 0%;
+}
+
+#marker-container-rue-andre-bollier {
+    left: 55%;
+    top: 56%;
+}
+
+#marker-container-square-emilie-tillion {
+    left: 26%;
+    top: 39%;
+}
+
+#marker-container-avenue-des-fusilles-de-chateaubriant {
+    left: 50%;
+    top: 45.2%;
+}
+
+#marker-container-avenue-gabriel-peri {
+    left: 71.5%;
+    top: 65%;
+}
+
+#marker-container-boulevard-du-general-giraud {
+    left: 60%;
+    top: 57%;
+}
+
+#marker-container-place-jean-moulin{
+    left: 15%;
+    top: 25.5%;
+}
+
+#marker-container-avenue-leopold-sedar-senghor {
+    left: 8%;
+    top: 42%;
+}
+
+#marker-container-avenue-pierre-brossolette {
+    left: 20%;
+    top: 17%;
+}
+
+#marker-container-rue-politzer {
+    left: 25%;
+    top: 7%;
+}
+
+#marker-container-carrefour-du-huit-mai-1945 {
+    left: 61%;
+    top: 10.5%;
+}
+
 .famille-info {
     position: absolute;
     background-color: rgba(255, 255, 255, 1);
@@ -248,7 +304,7 @@
     margin-bottom: 10px;
 }
 
-.btn-decouvrir, .btn {
+.btn-decouvrir {
     display: block;
     padding: 10px 15px;
     background-color: #142A57;
@@ -258,7 +314,7 @@
     margin-top: 10px;
 }
 
-.btn-decouvrir:hover, .btn:hover {
+.btn-decouvrir:hover  {
     background-color: #0e1d3d;
 }
 
