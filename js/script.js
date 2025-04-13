@@ -28,15 +28,15 @@ document.addEventListener("DOMContentLoaded", function() {
         'leclerc': { x: 35, y: 35, scale: 2 },
         'rue-andre-bollier': { x: 70, y: 85, scale: 3.5 },
         'rue-edouard-vallerand': { x: 5, y: -100, scale: 4 },
-        'square-emilie-tillion': { x: 50, y: 50, scale: 3.5 },
-        'avenue-des-fusilles-de-chateaubriant': { x: 60, y: 60, scale: 3.5 },
-        'avenue-gabriel-peri': { x: 70, y: 70, scale: 3.5 },
-        'boulevard-du-general-giraud': { x: 80, y: 80, scale: 3.5 },
-        'place-jean-moulin': { x: 90, y: 90, scale: 3.5 },
-        'avenue-leopold-sedar-senghor': { x: 100, y: 100, scale: 3.5 },
-        'avenue-pierre-brossolette': { x: 110, y: 110, scale: 3.5 },
-        'rue-politzer': { x: 120, y: 120, scale: 3.5 },
-        'carrefour-du-huit-mai-1945': { x: 130, y: 130, scale: 3.5 }
+        'square-emilie-tillion': { x: -20, y: 30, scale: 4 },
+        'avenue-des-fusilles-de-chateaubriant': { x: 60, y: 60, scale: 3 },
+        'avenue-gabriel-peri': { x: 90, y: 70, scale: 2 },
+        'boulevard-du-general-giraud': { x: 40, y: 40, scale: 1.5 },
+        'place-jean-moulin': { x: -80, y: -45, scale: 5 },
+        'avenue-leopold-sedar-senghor': { x: -160, y: 30, scale: 6 },
+        'avenue-pierre-brossolette': { x: -30, y: -40, scale: 3.5 },
+        'rue-politzer': { x: -20, y: -68, scale: 3.5 },
+        'carrefour-du-huit-mai-1945': { x: 120, y: -100, scale: 5 }
     };
 
     centrerCarteEtMarqueurs();
