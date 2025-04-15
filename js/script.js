@@ -1,5 +1,5 @@
 window.addEventListener("pageshow", function(event) {
-    if (event.persisted && !localStorage.getItem('transitionRetour')) {
+    if (event.persisted) {
         const imageCarte = document.querySelector(".carte-img");
         const carteContainer = document.querySelector(".carte-container");
 
