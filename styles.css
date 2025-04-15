@@ -434,3 +434,36 @@ body {
         opacity: 0;
     }
 }
+
+/* Styles pour la gestion des transitions */
+.transition-active {
+    pointer-events: none;
+}
+
+#transition-overlay {
+    background-color: rgba(0, 0, 0, 0);
+    transition: background-color 0.3s ease;
+}
+
+#transition-overlay.active {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Éviter les problèmes de flickering pendant les transitions */
+.carte-img, .carte-container {
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+/* Optimisation mobile */
+@media (max-width: 900px) {
+    .carte-container, .carte-img {
+        transform-origin: center center;
+    }
+    
+    /* Améliorer la fluidité des animations sur mobile */
+    .marker-container {
+        will-change: opacity;
+        transition: opacity 0.3s ease;
+    }
+}
