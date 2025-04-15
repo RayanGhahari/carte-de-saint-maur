@@ -1,30 +1,22 @@
 window.addEventListener("pageshow", function(event) {
-    // Vérifier si l'appareil est mobile (largeur d'écran inférieure à 900px)
-    const estMobile = window.innerWidth < 900;
-    
-    // Vérifier si c'est un retour arrière ou si le cache est utilisé
-    if (event.persisted || performance.navigation.type === 2) {
-        // Si ce n'est pas une transition de retour quartier ou si elle est périmée (plus de 5 secondes)
-        const transitionRetour = localStorage.getItem('transitionRetour') === 'true';
-        const transitionTimestamp = parseInt(localStorage.getItem('transitionTimestamp') || '0');
-        const transitionPerimee = Date.now() - transitionTimestamp > 5000;
-        
-        if (estMobile && (!transitionRetour || transitionPerimee)) {
-            const imageCarte = document.querySelector(".carte-img");
-            const carteContainer = document.querySelector(".carte-container");
+    if (event.persisted) {
+        // Effet de dézoom avant le rechargement pour les mobiles
+        const imageCarte = document.querySelector(".carte-img");
+        const carteContainer = document.querySelector(".carte-container");
 
-            if (imageCarte && carteContainer) {
-                imageCarte.style.transition = "transform 2s ease";
-                carteContainer.style.transition = "transform 2s ease";
-                imageCarte.style.transform = "scale(1)";
-                carteContainer.style.transform = "translate(0, 0)";
-            }
-
-            // Rechargement après l'effet sur mobile uniquement
-            setTimeout(() => {
-                window.location.reload();
-            }, 2000);
+        if (imageCarte && carteContainer) {
+            imageCarte.style.transition = "transform 2s ease";
+            carteContainer.style.transition = "transform 2s ease";
+            imageCarte.style.transform = "scale(1)";
+            carteContainer.style.transform = "translate(0, 0)";
         }
+
+        const isMobile = window.innerWidth < 900;
+
+        const delai = isMobile ? 2000 : 0;
+        setTimeout(() => {
+            window.location.reload();
+        }, delai);
     }
 });
 
@@ -134,6 +126,10 @@ document.addEventListener("DOMContentLoaded", function() {
             positionHaut = rect.top - rectConteneur.top - 200;
         }
         
+        if (positionHaut < 0) {
+            positionHaut = 10;
+        }
+
         if (positionHaut < 0) {
             positionHaut = 10;
         }
@@ -280,6 +276,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }, 2000);
     }
     
+
     function gererSurvolMarqueur(conteneur) {
         conteneur.addEventListener("mouseenter", function() {
             if (estPetitEcran() || isTransitioning) return;
@@ -384,6 +381,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
     
+
     function gererClicDocument(event) {
         if (estPetitEcran() && !isTransitioning) {
             const elementsInfo = document.querySelectorAll('.famille-info.visible');
@@ -485,87 +483,68 @@ document.addEventListener("DOMContentLoaded", function() {
         }, 100);
     });
 
-    // Gestion du retour
+    // Généralisation du zoom
     if (localStorage.getItem('transitionRetour') === 'true') {
         const Famille = localStorage.getItem('famille');
-        const transitionTimestamp = parseInt(localStorage.getItem('transitionTimestamp') || '0');
-        
-        // Vérifier si la transition n'est pas périmée (moins de 5 secondes)
-        if (Date.now() - transitionTimestamp < 5000) {
-            const normalisations = {
-                'le-parc-saint-maur': 'leparcsm',
-                'vieux-saint-maur': 'vieuxsm',
-                'saint-maur-creteil': 'smcreteil',
-                'les-muriers': 'lesmuriers',
-                'la-varenne': 'lavarenne',
-                'la-pie': 'lapie',
-                'place-de-stalingrad': 'stalingrad',
-                'rue-de-bir-hakeim': 'birhakeim',
-                'place-du-marechal-juin': 'juin',
-                'rue-bayon': 'bayon',
-                'place-de-la-resistance': 'resistance',
-                'avenue-de-la-liberation': 'liberation',
-                'avenue-de-lattre-de-tassigny': 'lattre',
-                'avenue-du-general-leclerc': 'leclerc'
-            };
-        
-            const famille = normalisations[Famille] || Famille;
-        
-            if (famille && zoomCoordinates[famille]) {
-                const coords = zoomCoordinates[famille];
-        
-                isTransitioning = true;
-                creerOverlayTransition();
-        
-                // Désactiver les transitions pour le positionnement initial
-                carteContainer.style.transition = 'none';
-                imageCarte.style.transition = 'none';
-                
-                conteneursMarqueurs.forEach(marqueur => marqueur.style.opacity = '0');
-                const titre = document.querySelector('.titre');
-                if (titre) titre.style.opacity = '0';
-        
-                const xOffset = 50 - coords.x;
-                const yOffset = 50 - coords.y;
-        
-                // Positionner initialement au point zoomé
-                carteContainer.style.transform = `translate(${xOffset}%, ${yOffset}%)`;
-                imageCarte.style.transform = `scale(${coords.scale})`;
-        
-                // Forcer le rafraîchissement du DOM
-                void carteContainer.offsetWidth;
-        
-                // Après un court délai, activer les transitions et revenir à l'état initial
+    
+        const normalisations = {
+            'le-parc-saint-maur': 'leparcsm',
+            'vieux-saint-maur': 'vieuxsm',
+            'saint-maur-creteil': 'smcreteil',
+            'les-muriers': 'lesmuriers',
+            'la-varenne': 'lavarenne',
+            'la-pie': 'lapie',
+            'place-de-stalingrad': 'stalingrad',
+            'rue-de-bir-hakeim': 'birhakeim',
+            'place-du-marechal-juin': 'juin',
+            'rue-bayon': 'bayon',
+            'place-de-la-resistance': 'resistance',
+            'avenue-de-la-liberation': 'liberation',
+            'avenue-de-lattre-de-tassigny': 'lattre',
+            'avenue-du-general-leclerc': 'leclerc'
+
+        };
+    
+        const famille = normalisations[Famille] || Famille;
+    
+        if (famille && zoomCoordinates[famille]) {
+            const coords = zoomCoordinates[famille];
+    
+            isTransitioning = true;
+            creerOverlayTransition();
+    
+            conteneursMarqueurs.forEach(marqueur => marqueur.style.opacity = '0');
+            const titre = document.querySelector('.titre');
+            if (titre) titre.style.opacity = '0';
+    
+            const xOffset = 50 - coords.x;
+            const yOffset = 50 - coords.y;
+    
+            carteContainer.style.transition = 'none';
+            imageCarte.style.transition = 'none';
+            carteContainer.style.transform = `translate(${xOffset}%, ${yOffset}%)`;
+            imageCarte.style.transform = `scale(${coords.scale})`;
+    
+            void carteContainer.offsetWidth;
+    
+            setTimeout(() => {
+                carteContainer.style.transition = 'transform 2s ease';
+                imageCarte.style.transition = 'transform 2s ease';
+                carteContainer.style.transform = 'translate(0, 0)';
+                imageCarte.style.transform = 'scale(1)';
+    
                 setTimeout(() => {
-                    carteContainer.style.transition = 'transform 2s ease';
-                    imageCarte.style.transition = 'transform 2s ease';
-                    carteContainer.style.transform = 'translate(0, 0)';
-                    imageCarte.style.transform = 'scale(1)';
-        
-                    setTimeout(() => {
-                        conteneursMarqueurs.forEach(marqueur => {
-                            marqueur.style.opacity = '1';
-                            marqueur.style.transition = 'opacity 0.5s ease';
-                        });
-                        if (titre) titre.style.opacity = '1';
-                        isTransitioning = false;
-                        supprimerOverlayTransition();
-        
-                        // Nettoyer le localStorage
-                        localStorage.removeItem('transitionRetour');
-                        localStorage.removeItem('famille');
-                        localStorage.removeItem('transitionTimestamp');
-                    }, 2000);
-                }, 100);
-            }
-        } else {
-            // Si la transition est périmée, nettoyer le localStorage
+                    conteneursMarqueurs.forEach(marqueur => marqueur.style.opacity = '1');
+                    if (titre) titre.style.opacity = '1';
+                    isTransitioning = false;
+                    supprimerOverlayTransition();
+                }, 2000);
+            }, 100);
+    
             localStorage.removeItem('transitionRetour');
             localStorage.removeItem('famille');
-            localStorage.removeItem('transitionTimestamp');
         }
     }
-    
-    // Ajouter une classe pour indiquer que le JavaScript est chargé
+
     document.body.classList.add('js-loaded');
 });
