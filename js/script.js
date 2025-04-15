@@ -479,9 +479,11 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // Généralisation du zoom
-    if (localStorage.getItem('transitionRetour') === 'true') {
-        const Famille = localStorage.getItem('famille');
-    
+if (localStorage.getItem('transitionRetour') === 'true') {
+    let famille = localStorage.getItem('rueVisitee');
+    if (!famille) {
+        const quartier = localStorage.getItem('quartierVisite');
+
         const normalisations = {
             'le-parc-saint-maur': 'leparcsm',
             'vieux-saint-maur': 'vieuxsm',
@@ -490,47 +492,49 @@ document.addEventListener("DOMContentLoaded", function() {
             'la-varenne': 'lavarenne',
             'la-pie': 'lapie'
         };
-    
-        const famille = normalisations[Famille] || Famille;
-    
-        if (famille && zoomCoordinates[famille]) {
-            const coords = zoomCoordinates[famille];
-    
-            isTransitioning = true;
-            creerOverlayTransition();
-    
-            conteneursMarqueurs.forEach(marqueur => marqueur.style.opacity = '0');
-            const titre = document.querySelector('.titre');
-            if (titre) titre.style.opacity = '0';
-    
-            const xOffset = 50 - coords.x;
-            const yOffset = 50 - coords.y;
-    
-            carteContainer.style.transition = 'none';
-            imageCarte.style.transition = 'none';
-            carteContainer.style.transform = `translate(${xOffset}%, ${yOffset}%)`;
-            imageCarte.style.transform = `scale(${coords.scale})`;
-    
-            void carteContainer.offsetWidth;
-    
-            setTimeout(() => {
-                carteContainer.style.transition = 'transform 2s ease';
-                imageCarte.style.transition = 'transform 2s ease';
-                carteContainer.style.transform = 'translate(0, 0)';
-                imageCarte.style.transform = 'scale(1)';
-    
-                setTimeout(() => {
-                    conteneursMarqueurs.forEach(marqueur => marqueur.style.opacity = '1');
-                    if (titre) titre.style.opacity = '1';
-                    isTransitioning = false;
-                    supprimerOverlayTransition();
-                }, 2000);
-            }, 100);
-    
-            localStorage.removeItem('transitionRetour');
-            localStorage.removeItem('famille');
-        }
+        
+        famille = normalisations[quartier] || quartier;
     }
+
+    if (famille && zoomCoordinates[famille]) {
+        const coords = zoomCoordinates[famille];
+
+        isTransitioning = true;
+        creerOverlayTransition();
+
+        conteneursMarqueurs.forEach(marqueur => marqueur.style.opacity = '0');
+        const titre = document.querySelector('.titre');
+        if (titre) titre.style.opacity = '0';
+
+        const xOffset = 50 - coords.x;
+        const yOffset = 50 - coords.y;
+
+        carteContainer.style.transition = 'none';
+        imageCarte.style.transition = 'none';
+        carteContainer.style.transform = `translate(${xOffset}%, ${yOffset}%)`;
+        imageCarte.style.transform = `scale(${coords.scale})`;
+
+        void carteContainer.offsetWidth;
+
+        setTimeout(() => {
+            carteContainer.style.transition = 'transform 2s ease';
+            imageCarte.style.transition = 'transform 2s ease';
+            carteContainer.style.transform = 'translate(0, 0)';
+            imageCarte.style.transform = 'scale(1)';
+
+            setTimeout(() => {
+                conteneursMarqueurs.forEach(marqueur => marqueur.style.opacity = '1');
+                if (titre) titre.style.opacity = '1';
+                isTransitioning = false;
+                supprimerOverlayTransition();
+            }, 2000);
+        }, 100);
+
+        localStorage.removeItem('transitionRetour');
+        localStorage.removeItem('rueVisitee');
+        localStorage.removeItem('quartierVisite');
+    }
+}
 
     document.body.classList.add('js-loaded');
 });
