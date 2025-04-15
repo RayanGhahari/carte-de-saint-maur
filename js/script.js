@@ -1,25 +1,27 @@
 window.addEventListener("pageshow", function(event) {
-    const isMobile = window.innerWidth <= 900;
+    // Vérifier si l'appareil est mobile (largeur d'écran inférieure à 900px)
+    const estMobile = window.innerWidth < 900;
+    
+    if (event.persisted) {
+        // Si on est sur mobile et que ce n'est pas une transition de retour quartier
+        if (estMobile && localStorage.getItem('transitionRetour') !== 'true') {
+            const imageCarte = document.querySelector(".carte-img");
+            const carteContainer = document.querySelector(".carte-container");
 
-    if (event.persisted && isMobile) {
-        const imageCarte = document.querySelector(".carte-img");
-        const carteContainer = document.querySelector(".carte-container");
+            if (imageCarte && carteContainer) {
+                imageCarte.style.transition = "transform 2s ease";
+                carteContainer.style.transition = "transform 2s ease";
+                imageCarte.style.transform = "scale(1)";
+                carteContainer.style.transform = "translate(0, 0)";
+            }
 
-        if (imageCarte && carteContainer) {
-            imageCarte.style.transition = "transform 2s ease";
-            carteContainer.style.transition = "transform 2s ease";
-            imageCarte.style.transform = "scale(1)";
-            carteContainer.style.transform = "translate(0, 0)";
+            // Rechargement après l'effet
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
         }
-
-        // Rechargement après l'effet
-        setTimeout(() => {
-            window.location.reload();
-        }, 2000);
     }
 });
-
-
 
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -539,11 +541,12 @@ document.addEventListener("DOMContentLoaded", function() {
                     if (titre) titre.style.opacity = '1';
                     isTransitioning = false;
                     supprimerOverlayTransition();
-                }, 2000);
-            }, 100);
+
     
             localStorage.removeItem('transitionRetour');
             localStorage.removeItem('famille');
+            }, 2000);
+        }, 100);
         }
     }
 
