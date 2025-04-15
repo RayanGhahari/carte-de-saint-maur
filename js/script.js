@@ -1,10 +1,9 @@
 window.addEventListener("pageshow", function(event) {
-    // Vérifier si l'appareil est mobile (largeur d'écran inférieure à 900px)
     const estMobile = window.innerWidth < 900;
     
     if (event.persisted) {
-        // Si on est sur mobile et que ce n'est pas une transition de retour quartier
-        if (estMobile && localStorage.getItem('transitionRetour') !== 'true') {
+        // Si ce n'est pas une transition de retour quartier
+        if (localStorage.getItem('transitionRetour') !== 'true') {
             const imageCarte = document.querySelector(".carte-img");
             const carteContainer = document.querySelector(".carte-container");
 
@@ -15,10 +14,22 @@ window.addEventListener("pageshow", function(event) {
                 carteContainer.style.transform = "translate(0, 0)";
             }
 
-            // Rechargement après l'effet
-            setTimeout(() => {
-                window.location.reload();
-            }, 2000);
+            // Uniquement recharger sur mobile
+            if (estMobile) {
+                // Utiliser un identifiant unique pour cette session de navigation
+                const reloadId = Date.now().toString();
+                
+                // Vérifier si on a déjà rechargé avec cet ID
+                if (sessionStorage.getItem('lastReloadId') !== reloadId) {
+                    // Stocker l'ID avant le rechargement
+                    sessionStorage.setItem('lastReloadId', reloadId);
+                    
+                    // Rechargement après l'effet
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                }
+            }
         }
     }
 });
