@@ -1,5 +1,7 @@
 window.addEventListener("pageshow", function(event) {
-    if (event.persisted) {
+    const isMobile = window.innerWidth <= 900;
+
+    if (event.persisted && isMobile) {
         const imageCarte = document.querySelector(".carte-img");
         const carteContainer = document.querySelector(".carte-container");
 
@@ -10,11 +12,13 @@ window.addEventListener("pageshow", function(event) {
             carteContainer.style.transform = "translate(0, 0)";
         }
 
+        // Rechargement après l'effet
         setTimeout(() => {
             window.location.reload();
         }, 2000);
     }
 });
+
 
 
 
