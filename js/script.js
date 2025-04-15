@@ -1,6 +1,5 @@
 window.addEventListener("pageshow", function(event) {
-    if (event.persisted) {
-        // Effet de dézoom avant le rechargement pour les mobiles
+    if (event.persisted && !localStorage.getItem('transitionRetour')) {
         const imageCarte = document.querySelector(".carte-img");
         const carteContainer = document.querySelector(".carte-container");
 
@@ -11,12 +10,12 @@ window.addEventListener("pageshow", function(event) {
             carteContainer.style.transform = "translate(0, 0)";
         }
 
-        // Rechargement après l'effet
         setTimeout(() => {
             window.location.reload();
         }, 2000);
     }
 });
+
 
 
 document.addEventListener("DOMContentLoaded", function() {
