@@ -41,14 +41,14 @@ document.addEventListener("DOMContentLoaded", function() {
         'adamville': { x: 38.6, y: 60, scale: 2.25 },
         'lapie': { x: 15, y: 100, scale: 2 },
         'lesmuriers': { x: 95, y: 167, scale: 3.5 },
-        'stalingrad': { x: 145, y: 80, scale: 5 },
-        'birhakeim': { x: -75, y: 47, scale: 4.5 },
-        'juin': { x: 85, y: -10, scale: 5 },
-        'bayon': { x: 170, y: 290, scale: 6 },
-        'resistance': { x: 45, y: 250, scale: 5 },
-        'liberation': { x: 35, y: 50, scale: 2 },
-        'lattre': { x: 50, y: 20, scale: 2 },
-        'leclerc': { x: 35, y: 35, scale: 2 },
+        'place-de-stalingrad': { x: 145, y: 80, scale: 5 },
+        'rue-de-birhakeim': { x: -75, y: 47, scale: 4.5 },
+        'place-du-marechal-juin': { x: 85, y: -10, scale: 5 },
+        'rue-bayon': { x: 170, y: 290, scale: 6 },
+        'place-de-la-resistance': { x: 45, y: 250, scale: 5 },
+        'avenue-de-la-liberation': { x: 35, y: 50, scale: 2 },
+        'avenue-de-lattre-de-tassigny': { x: 50, y: 20, scale: 2 },
+        'avenue-du-general-leclerc': { x: 35, y: 35, scale: 2 },
         'rue-andre-bollier': { x: 70, y: 85, scale: 3.5 },
         'rue-edouard-vallerand': { x: 5, y: -100, scale: 4 },
         'square-emilie-tillion': { x: -20, y: 30, scale: 4 },
@@ -60,9 +60,12 @@ document.addEventListener("DOMContentLoaded", function() {
         'avenue-pierre-brossolette': { x: -30, y: -40, scale: 3.5 },
         'rue-politzer': { x: -20, y: -68, scale: 3.5 },
         'carrefour-du-huit-mai-1945': { x: 120, y: -100, scale: 5 },
-        'square-darromanches': { x: -10, y: 70, scale: 4.5 },
-        'avenue-pierre-semard': { x: -10, y: 70, scale: 4.5 },
+        'square-et-avenue-darromanches': { x: -10, y: 70, scale: 4 },
+        'avenue-pierre-semard': { x: 50, y: 80, scale: 2 },
         'avenue-et-place-charles-de-gaulle': { x: 30, y: -130, scale: 4.5 },
+        'square-victor-basch': { x: 165, y: 90, scale: 4 },
+        'quai-winston-churchill': { x: 100, y: 20, scale: 2 },
+        'rue-de-metz': { x: 80, y: 110, scale: 4.5 },
     };
 
     centrerCarteEtMarqueurs();
@@ -355,14 +358,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (estDansQuartier) {
                     zoomSurRue(famille, function() {
                         const lienRue = famille
-                            .replace('stalingrad', 'place-de-stalingrad')
-                            .replace('birhakeim', 'rue-de-bir-hakeim')
-                            .replace('juin', 'place-du-marechal-juin')
-                            .replace('bayon', 'rue-bayon')
-                            .replace('resistance', 'place-de-la-resistance')
-                            .replace('liberation', 'avenue-de-la-liberation')
-                            .replace('lattre', 'avenue-de-lattre-de-tassigny')
-                            .replace('leclerc', 'avenue-du-general-leclerc')
                         window.location.href = `../rues/${lienRue}.html`;
                     });
                 } else {
@@ -493,16 +488,7 @@ document.addEventListener("DOMContentLoaded", function() {
             'saint-maur-creteil': 'smcreteil',
             'les-muriers': 'lesmuriers',
             'la-varenne': 'lavarenne',
-            'la-pie': 'lapie',
-            'place-de-stalingrad': 'stalingrad',
-            'rue-de-bir-hakeim': 'birhakeim',
-            'place-du-marechal-juin': 'juin',
-            'rue-bayon': 'bayon',
-            'place-de-la-resistance': 'resistance',
-            'avenue-de-la-liberation': 'liberation',
-            'avenue-de-lattre-de-tassigny': 'lattre',
-            'avenue-du-general-leclerc': 'leclerc'
-
+            'la-pie': 'lapie'
         };
     
         const famille = normalisations[Famille] || Famille;

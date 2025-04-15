@@ -171,42 +171,42 @@
     top: 74%;
 }
 
-#marker-container-stalingrad {
+#marker-container-place-de-stalingrad {
     left: 69%;
     top: 51%;
 }
 
-#marker-container-birhakeim {
+#marker-container-rue-de-birhakeim {
     left: 15%;
     top: 45.1%;
 }
 
-#marker-container-liberation {
+#marker-container-avenue-de-la-liberation {
     left: 37.1%;
     top: 40%;
 }
 
-#marker-container-resistance {
+#marker-container-place-de-la-resistance {
     left: 42.5%;
     top: 84%;
 }
 
-#marker-container-bayon {
+#marker-container-rue-bayon {
     left: 67.6%;
     top: 87%;
 }
 
-#marker-container-lattre {
+#marker-container-avenue-de-lattre-de-tassigny {
     left: 45%;
     top: 24%;
 }
 
-#marker-container-leclerc {
+#marker-container-avenue-du-general-leclerc {
     left: 35%;
     top: 30%;
 }
 
-#marker-container-juin {
+#marker-container-place-du-marechal-juin {
     left: 54%;
     top: 30%;
 }
@@ -266,9 +266,9 @@
     top: 10.5%;
 }
 
-#marker-container-square-darromanches {
+#marker-container-square-et-avenue-darromanches {
     left: 29.5%;
-    top: 49%;
+    top: 47%;
 }
 
 #marker-container-avenue-pierre-semard {
@@ -279,6 +279,21 @@
 #marker-container-avenue-et-place-charles-de-gaulle {
     left: 39.5%;
     top: 3%;
+}
+
+#marker-container-square-victor-basch {
+    left: 77%;
+    top: 57%;
+}
+
+#marker-container-quai-winston-churchill {
+    left: 93%;
+    top: 42%;
+}
+
+#marker-container-rue-de-metz {
+    left: 52%;
+    top: 57.6%;
 }
 
 .famille-info {
@@ -467,3 +482,56 @@ body {
         transition: opacity 0.3s ease;
     }
 }
+
+/*Code les Justes nos voisins*/
+
+
+.grid-2{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 100vh;
+    height: auto;
+}
+
+.grid-2-img img{
+    height: 100%;
+    max-height: 99vh ;
+    object-fit: cover;
+    width: 100%;
+    min-width: 100%;
+}
+
+.grid-2-desc{
+    width: 90%;
+    margin: auto;
+    padding: 60px 30px;
+    max-width: 750px
+}
+.grid-2-desc h3{
+    color: darkblue;
+    padding-bottom: 15px;
+    font-size: 2rem;
+}
+
+.grid-2-desc p{
+    overflow-wrap: anywhere;
+}
+
+@media (max-width:750px){
+    .grid-2{
+        grid-template-rows: auto auto;
+        grid-template-columns: none;
+        height: auto;
+        min-height: auto;
+    }
+    .grid-2-img img{
+        height: 100%;
+    }
+    .grid-2-img{
+        height: 60vh;
+    }
+    .grid-2-desc{
+        grid-row-start: 2;
+        padding: 100px 20;
+    }
+}    
