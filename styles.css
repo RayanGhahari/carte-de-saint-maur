@@ -266,6 +266,21 @@
     top: 10.5%;
 }
 
+#marker-container-square-darromanches {
+    left: 29.5%;
+    top: 49%;
+}
+
+#marker-container-avenue-pierre-semard {
+    left: 45%;
+    top: 65%;
+}
+
+#marker-container-avenue-et-place-charles-de-gaulle {
+    left: 39.5%;
+    top: 3%;
+}
+
 .famille-info {
     position: absolute;
     background-color: rgba(255, 255, 255, 1);

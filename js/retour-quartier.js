@@ -1,18 +1,34 @@
+window.addEventListener("beforeunload", function () {
+    const matchQuartier = window.location.pathname.match(/quartier\/([a-z0-9\-]+)\.html/);
+    const matchRue = window.location.pathname.match(/rues\/([a-z0-9\-]+)\.html/);
+    
+    const famille = matchQuartier?.[1] || matchRue?.[1];
+    if (famille) {
+        localStorage.setItem('transitionRetour', 'true');
+        localStorage.setItem('famille', famille);
+    }
+});
+
 document.addEventListener("DOMContentLoaded", function() {
-    // Gestion du bouton de retour avec transition
     const btnRetour = document.getElementById('btn-retour-accueil');
     
-    btnRetour.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Redirection après l'animation
-        setTimeout(function() {
-            // Stocker l'information sur le quartier d'origine pour la transition inverse
-            const quartier = window.location.pathname.split('/').pop().replace('.html', '');
-            localStorage.setItem('quartierId', quartier);
-            localStorage.setItem('transitionRetour', 'true');
+    if (btnRetour) {
+        btnRetour.addEventListener('click', function(e) {
+            e.preventDefault();
             
-            window.location.href = btnRetour.getAttribute('href');
-        }, 500);
-    });
+            const path = window.location.pathname;
+            const matchQuartier = path.match(/quartier\/([a-z0-9\-]+)\.html/);
+            const matchRue = path.match(/rues\/([a-z0-9\-]+)\.html/);
+            const famille = matchQuartier?.[1] || matchRue?.[1];
+
+            
+            setTimeout(function() {
+                if (famille) {
+                    localStorage.setItem('famille', famille);
+                    localStorage.setItem('transitionRetour', 'true');
+                }
+                window.location.href = btnRetour.getAttribute('href');
+            }, 500);
+        });
+    }
 });

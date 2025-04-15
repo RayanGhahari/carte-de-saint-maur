@@ -1,3 +1,24 @@
+window.addEventListener("pageshow", function(event) {
+    if (event.persisted) {
+        // Effet de dézoom avant le rechargement pour les mobiles
+        const imageCarte = document.querySelector(".carte-img");
+        const carteContainer = document.querySelector(".carte-container");
+
+        if (imageCarte && carteContainer) {
+            imageCarte.style.transition = "transform 2s ease";
+            carteContainer.style.transition = "transform 2s ease";
+            imageCarte.style.transform = "scale(1)";
+            carteContainer.style.transform = "translate(0, 0)";
+        }
+
+        // Rechargement après l'effet
+        setTimeout(() => {
+            window.location.reload();
+        }, 2000);
+    }
+});
+
+
 document.addEventListener("DOMContentLoaded", function() {
     const conteneursMarqueurs = document.querySelectorAll(".marker-container");
     const conteneurCarte = document.querySelector(".carte-outer-container");
@@ -36,7 +57,10 @@ document.addEventListener("DOMContentLoaded", function() {
         'avenue-leopold-sedar-senghor': { x: -160, y: 30, scale: 6 },
         'avenue-pierre-brossolette': { x: -30, y: -40, scale: 3.5 },
         'rue-politzer': { x: -20, y: -68, scale: 3.5 },
-        'carrefour-du-huit-mai-1945': { x: 120, y: -100, scale: 5 }
+        'carrefour-du-huit-mai-1945': { x: 120, y: -100, scale: 5 },
+        'square-darromanches': { x: -10, y: 70, scale: 4.5 },
+        'avenue-pierre-semard': { x: -10, y: 70, scale: 4.5 },
+        'avenue-et-place-charles-de-gaulle': { x: 30, y: -130, scale: 4.5 },
     };
 
     centrerCarteEtMarqueurs();
@@ -78,6 +102,10 @@ document.addEventListener("DOMContentLoaded", function() {
             case 'adamville':
                 positionGauche = 2*rect.left + 2*rectConteneur.left;
                 positionHaut = rect.bottom - rectConteneur.top;
+                break;
+            case 'rue-edouard-vallerand':
+                positionGauche = rect.left - rectConteneur.left - 350;
+                positionHaut = - rect.bottom + rectConteneur.top;
                 break;
             default:
                 positionGauche = rect.right - rectConteneur.left;
@@ -453,79 +481,66 @@ document.addEventListener("DOMContentLoaded", function() {
         }, 100);
     });
 
-    // Gestion du retour à la page d'accueil avec transition inverse
-    // Vérifier si on vient de naviguer depuis une page de quartier
+    // Généralisation du zoom
     if (localStorage.getItem('transitionRetour') === 'true') {
-        const quartier = localStorage.getItem('quartierId');
-        
-        // Convertir le nom du fichier en identifiant de quartier
-        let quartierId = quartier;
-        if (quartier === 'le-parc-saint-maur') quartierId = 'leparcsm';
-        else if (quartier === 'vieux-saint-maur') quartierId = 'vieuxsm';
-        else if (quartier === 'saint-maur-creteil') quartierId = 'smcreteil';
-        else if (quartier === 'les-muriers') quartierId = 'lesmuriers';
-        else if (quartier === 'la-varenne') quartierId = 'lavarenne';
-        else if (quartier === 'la-pie') quartierId = 'lapie';
-        
-        // Si on trouve un quartier valide, animer la transition inverse
-        if (quartierId && zoomCoordinates[quartierId]) {
-            const coords = zoomCoordinates[quartierId];
-            
-            // Démarrer avec le zoom sur le quartier
+        const Famille = localStorage.getItem('famille');
+    
+        const normalisations = {
+            'le-parc-saint-maur': 'leparcsm',
+            'vieux-saint-maur': 'vieuxsm',
+            'saint-maur-creteil': 'smcreteil',
+            'les-muriers': 'lesmuriers',
+            'la-varenne': 'lavarenne',
+            'la-pie': 'lapie',
+            'place-de-stalingrad': 'stalingrad',
+            'rue-de-bir-hakeim': 'birhakeim',
+            'place-du-marechal-juin': 'juin',
+            'rue-bayon': 'bayon',
+            'place-de-la-resistance': 'resistance',
+            'avenue-de-la-liberation': 'liberation',
+            'avenue-de-lattre-de-tassigny': 'lattre',
+            'avenue-du-general-leclerc': 'leclerc'
+
+        };
+    
+        const famille = normalisations[Famille] || Famille;
+    
+        if (famille && zoomCoordinates[famille]) {
+            const coords = zoomCoordinates[famille];
+    
             isTransitioning = true;
-            
-            // Créer un overlay pour bloquer les interactions pendant la transition inverse
             creerOverlayTransition();
-            
-            // Cacher tous les marqueurs pendant l'animation de retour
-            conteneursMarqueurs.forEach(marqueur => {
-                marqueur.style.opacity = '0';
-            });
-            
-            // Cacher le titre pendant l'animation de retour
+    
+            conteneursMarqueurs.forEach(marqueur => marqueur.style.opacity = '0');
             const titre = document.querySelector('.titre');
-            if (titre) {
-                titre.style.opacity = '0';
-            }
-            
-            // Calculer le décalage pour centrer sur le quartier
+            if (titre) titre.style.opacity = '0';
+    
             const xOffset = 50 - coords.x;
             const yOffset = 50 - coords.y;
-            
-            // Positionner la carte comme si on était zoomé sur le quartier
+    
             carteContainer.style.transition = 'none';
             imageCarte.style.transition = 'none';
             carteContainer.style.transform = `translate(${xOffset}%, ${yOffset}%)`;
             imageCarte.style.transform = `scale(${coords.scale})`;
-            
-            // Forcer un reflow pour appliquer les styles avant de démarrer l'animation
+    
             void carteContainer.offsetWidth;
-            
-            // Après un court délai, animer le retour à la vue normale
+    
             setTimeout(() => {
                 carteContainer.style.transition = 'transform 2s ease';
                 imageCarte.style.transition = 'transform 2s ease';
                 carteContainer.style.transform = 'translate(0, 0)';
                 imageCarte.style.transform = 'scale(1)';
-                
-                // Afficher à nouveau les marqueurs et le titre après l'animation
+    
                 setTimeout(() => {
-                    conteneursMarqueurs.forEach(marqueur => {
-                        marqueur.style.opacity = '1';
-                    });
-                    
-                    if (titre) {
-                        titre.style.opacity = '1';
-                    }
-                    
+                    conteneursMarqueurs.forEach(marqueur => marqueur.style.opacity = '1');
+                    if (titre) titre.style.opacity = '1';
                     isTransitioning = false;
                     supprimerOverlayTransition();
                 }, 2000);
             }, 100);
-            
-            // Nettoyer le localStorage
+    
             localStorage.removeItem('transitionRetour');
-            localStorage.removeItem('quartierId');
+            localStorage.removeItem('famille');
         }
     }
 
