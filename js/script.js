@@ -11,7 +11,7 @@ window.addEventListener("pageshow", function(event) {
             carteContainer.style.transform = "translate(0, 0)";
         }
 
-        const isMobile = navigator.userAgentData.mobile;
+        const isMobile = navigator.userAgentData.mobile || window.innerWidth < 800;
 
         const delai = isMobile ? 2000 : 0;
         setTimeout(() => {
