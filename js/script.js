@@ -11,7 +11,7 @@ window.addEventListener("pageshow", function(event) {
             carteContainer.style.transform = "translate(0, 0)";
         }
 
-        const isMobile = navigator.userAgentData.mobile || window.innerWidth < 800;
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 800;
 
         const delai = isMobile ? 2000 : 0;
         setTimeout(() => {
@@ -101,17 +101,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 positionHaut = rect.top - rectConteneur.top;
                 break;
             case 'champignol':
-                positionGauche = 2*rect.left + 2*rectConteneur.left;
-                positionHaut = - rect.bottom + rectConteneur.top;
+                positionGauche = rect.left + rectConteneur.right ;
+                positionHaut = rect.top - rectConteneur.top -150;
                 break;
-            case 'adamville':
-                positionGauche = 2*rect.left + 2*rectConteneur.left;
-                positionHaut = rect.bottom - rectConteneur.top;
-                break;
-            case 'rue-edouard-vallerand':
-                positionGauche = rect.left - rectConteneur.left - 350;
-                positionHaut = - rect.bottom + rectConteneur.top;
-                break;
+
             default:
                 positionGauche = rect.right - rectConteneur.left;
                 positionHaut = rect.top - rectConteneur.top;
@@ -127,14 +120,6 @@ document.addEventListener("DOMContentLoaded", function() {
         
         if (positionHaut + 400 > rectConteneur.height) {
             positionHaut = rect.top - rectConteneur.top - 200;
-        }
-        
-        if (positionHaut < 0) {
-            positionHaut = 10;
-        }
-
-        if (positionHaut < 0) {
-            positionHaut = 10;
         }
 
         elementInfo.style.left = `${positionGauche}px`;
