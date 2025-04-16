@@ -92,34 +92,42 @@ document.addEventListener("DOMContentLoaded", function() {
         return window.innerWidth < largeurEcranPetit;
     }
 
-    function afficherInfoBulle(elementInfo, rect, rectConteneur, famille) {
-        let positionGauche, positionHaut;
+    function afficherInfoBulle(elementInfo, rect, rectConteneur) {
+
+        let positionGauche = rect.right - rectConteneur.left;
+        let positionHaut = rect.top - rectConteneur.top;
+        const largeurInfoBulle = 300;
+        const hauteurInfoBulle = elementInfo.offsetHeight;
         
-        switch(famille) {
-            case 'lavarenne':
-                positionGauche = rect.right - rectConteneur.left;
-                positionHaut = rect.top - rectConteneur.top;
-                break;
-            case 'champignol':
-                positionGauche = rect.left + rectConteneur.right ;
-                positionHaut = rect.top - rectConteneur.top -150;
-                break;
-
-            default:
-                positionGauche = rect.right - rectConteneur.left;
-                positionHaut = rect.top - rectConteneur.top;
-        }
-
-        if (positionGauche + 310 > rectConteneur.width) {
-            positionGauche = rect.left - rectConteneur.left - 350;
+        if (positionGauche + largeurInfoBulle > rectConteneur.width) {
+            // placer à gauche si nécessaire
+            positionGauche = rect.left - rectConteneur.left - largeurInfoBulle;
         }
         
+        // Si toujours pas d'espace suffisant : Centrer horizontalement
         if (positionGauche < 0) {
-            positionGauche = 10;
+            positionGauche = (rect.left + rect.right) / 2 - rectConteneur.left - largeurInfoBulle / 2;
+            
+            // verif
+            if (positionGauche < 10) positionGauche = 10;
+            if (positionGauche + largeurInfoBulle > rectConteneur.width - 10) {
+                positionGauche = rectConteneur.width - largeurInfoBulle - 10;
+            }
         }
         
-        if (positionHaut + 400 > rectConteneur.height) {
-            positionHaut = rect.top - rectConteneur.top - 200;
+        // Vérification de l'espace disponible en bas
+        if (positionHaut + hauteurInfoBulle > rectConteneur.height) {
+            // placer au-dessus si  nécessaire
+            positionHaut = rect.top - rectConteneur.top - hauteurInfoBulle;
+        }
+        
+        // Si toujours pas d'espace suffisant 
+        if (positionHaut < 0) {
+            positionHaut = rect.bottom - rectConteneur.top;
+            if (positionHaut + hauteurInfoBulle > rectConteneur.height) {
+                positionHaut = rectConteneur.height - hauteurInfoBulle - 10;
+            }
+            if (positionHaut < 10) positionHaut = 10;
         }
 
         elementInfo.style.left = `${positionGauche}px`;
