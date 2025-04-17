@@ -308,7 +308,7 @@
     transition: opacity 0.3s ease, transform 0.3s ease;
     z-index: 1000;
     pointer-events: none;
-    max-width: auto;
+    max-height: 500px;
     top: 10px;
     left: 10px;
 }

@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function() {
         
         if (positionGauche + largeurInfoBulle > rectConteneur.width) {
             // placer à gauche si nécessaire
-            positionGauche = rect.left - rectConteneur.left - largeurInfoBulle;
+            positionGauche = rect.left - rectConteneur.left - largeurInfoBulle-20;
         }
         
         // Si toujours pas d'espace suffisant : Centrer horizontalement
