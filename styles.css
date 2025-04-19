@@ -75,14 +75,15 @@
     z-index: 2;
     width: 100%;
     text-align: center;
-    padding-left: 20%;
+
 } 
 .titre h2{
     margin: 2% 25% 0 25%;
     border: solid;
-    font-size: large;
+    font-size: 1.3rem;
     font-family: 'Playfair Display', serif;
     font-weight: bold;
+    background-color: rgba(255 255 255/.5);
 }
 
 .sous-titre{
@@ -90,15 +91,16 @@
     z-index: 2;
     width: 100%;
     text-align: center;
-    padding-left: 35%;
+    padding-left: 31%;
     pointer-events: none;
 }
 .sous-titre h2{
-    margin: 2% 40% 0 40%;
+    margin: 2% 35% 0 35%;
     border: solid;
     font-size: xx-large;
     font-family: 'Playfair Display', serif;
     font-weight: bold;
+    background-color: rgba(255 255 255/.5);
 }
 .marker-container:hover{
     z-index: 2;
@@ -384,13 +386,16 @@
         top: 50% !important;
         left: -60% !important;
     }
+    .titre h2{
+    margin: 5%;
+    }
     .sous-titre {
-        padding-left: 27%;
-    padding-top: 3%;
+    padding-top: 70px;
+    padding-left: 0px;
     }
     .sous-titre h2{
-        margin: 0 30% 0 30%;
-        font-size: large;
+    margin: 0 5% 5% 5%;
+    font-size: x-large;
     }
 }
 .gt_float_switcher .gt_options{
