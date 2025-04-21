@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function() {
         'lapie': { x: 15, y: 100, scale: 2 },
         'lesmuriers': { x: 95, y: 167, scale: 3.5 },
         'place-de-stalingrad': { x: 145, y: 80, scale: 5 },
-        'rue-de-birhakeim': { x: -75, y: 47, scale: 4.5 },
+        'rue-de-bir-hakeim': { x: -75, y: 47, scale: 4.5 },
         'place-du-marechal-juin': { x: 85, y: -10, scale: 5 },
         'rue-bayon': { x: 170, y: 290, scale: 6 },
         'place-de-la-resistance': { x: 45, y: 250, scale: 5 },
