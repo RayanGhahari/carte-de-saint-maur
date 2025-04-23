@@ -48,7 +48,7 @@
     width: 120%;
     height: 120%;
     pointer-events: none;
-    background: radial-gradient(circle at center,transparent 65%,white 100%);
+    background: radial-gradient(circle at center,transparent 45%,white 100%);
     z-index: 1;
 }
 
