@@ -542,5 +542,5 @@ body {
 }    
 
 .muriers h2{
-    background-color: rgba(255 255 255/.8);
+    background-color: rgba(255 255 255/.75) !important;
 }
