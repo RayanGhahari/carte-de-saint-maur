@@ -32,12 +32,12 @@
     height: 100vh;
     margin: auto;
     background: linear-gradient(to right, 
-    #0055A4 0%, 
-    #0055A4 33%, 
-    white 33%, 
-    white 66%, 
-    #EF4135 66%, 
-    #EF4135 100%);
+    rgba(0, 85, 164, 0.75) 0%, 
+    rgba(0, 85, 164, 0.75) 33%, 
+    rgba(255, 255, 255, 0.75) 33%, 
+    rgba(255, 255, 255, 0.75) 66%, 
+    rgba(239, 65, 53, 0.75) 66%, 
+    rgba(239, 65, 53, 0.75) 100%);
 }
 
 .sous-sect::after {
