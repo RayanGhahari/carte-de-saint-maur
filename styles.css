@@ -501,6 +501,7 @@ body {
 
 .grid-2-img img{
     height: 99.70%;
+    max-height:99.7vh ;
     object-fit: cover;
     width: 100%;
     min-width: 100%;
